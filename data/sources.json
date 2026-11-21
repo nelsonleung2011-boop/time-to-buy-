@@ -1,0 +1,178 @@
+{
+  "checked_at": "2026-11-21T13:20:46Z",
+  "mode": "LIVE",
+  "sources": {
+    "SPY": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6763
+    },
+    "VIX": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6765
+    },
+    "VIX9D": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 3996
+    },
+    "TNX": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6757
+    },
+    "FVX": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6757
+    },
+    "HYG": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 4937
+    },
+    "LQD": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6119
+    },
+    "RSP": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 5929
+    },
+    "XLC": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 2119
+    },
+    "XLRE": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 2797
+    },
+    "XLB": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6763
+    },
+    "XLE": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6763
+    },
+    "XLF": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6763
+    },
+    "XLI": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6763
+    },
+    "XLK": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6763
+    },
+    "XLP": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6763
+    },
+    "XLU": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6763
+    },
+    "XLV": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6763
+    },
+    "XLY": {
+      "status": "UPDATED",
+      "added": 0,
+      "from": "2026-11-20",
+      "last": "2026-11-20",
+      "n": 6763
+    },
+    "BAMLH0A0HYM2": {
+      "status": "UPDATED",
+      "added": 0,
+      "last": "2026-11-19",
+      "n": 787
+    },
+    "DFII10": {
+      "status": "UPDATED",
+      "added": 0,
+      "last": "2026-11-19",
+      "n": 5975
+    },
+    "T10Y2Y": {
+      "status": "UPDATED",
+      "added": 0,
+      "last": "2026-11-20",
+      "n": 12615
+    },
+    "DGS10": {
+      "status": "UPDATED",
+      "added": 0,
+      "last": "2026-11-19",
+      "n": 16206
+    },
+    "FNG": {
+      "status": "UPDATED",
+      "added": 0,
+      "last": "2026-11-20",
+      "n": 252
+    },
+    "CAPE": {
+      "status": "UPDATED",
+      "added": 0,
+      "last": "2026-11-01",
+      "n": 1870
+    }
+  },
+  "updated": 25,
+  "failed": 0,
+  "status": "OK"
+}

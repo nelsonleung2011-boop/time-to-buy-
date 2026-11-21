@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Time to Buy? — 美股熊市底部监控</title>
+<style>
+  :root { color-scheme: light;
+    --bg:#f4f7fa; --card:#ffffff; --line:#e0e7ee; --ink:#16202b; --muted:#637386;
+    --accent:#12657f; --accent-soft:#e8f3f7; --good:#0f7a5f; --good-soft:#e6f4ef;
+    --warn:#a66a12; --warn-soft:#fbf1de; --bad:#b23b2e; --bad-soft:#fbecea;
+    --neutral:#5d6b7a; --neutral-soft:#eef2f6; --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font-family:"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+         font-size:14px; line-height:1.55; }
+  .wrap { max-width:1180px; margin:0 auto; padding:0 22px; }
+  header.top { background:#fff; border-bottom:1px solid var(--line); }
+  .top-in { display:flex; align-items:center; gap:18px; padding:18px 22px; flex-wrap:wrap; }
+  .logo { width:46px; height:46px; border-radius:11px; background:var(--accent); color:#fff;
+          font-weight:800; font-size:20px; display:flex; align-items:center; justify-content:center;
+          font-family:var(--mono); letter-spacing:-1px; flex:none; }
+  h1 { font-size:22px; margin:0; letter-spacing:-.3px; }
+  .sub { color:var(--muted); font-size:12.5px; margin-top:2px; }
+  .top-meta { margin-left:auto; text-align:right; font-size:11.5px; color:var(--muted); }
+  .top-meta b { display:block; font-family:var(--mono); font-size:13px; color:var(--ink); }
+  main { padding:22px 0 60px; }
+  .banner { border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:13px; font-weight:600; }
+  .banner.alert { background:var(--bad-soft); color:var(--bad); border:1px solid #f0c7c1; }
+  .banner.info { background:var(--accent-soft); color:var(--accent); border:1px solid #c9e2ea; }
+  .hidden { display:none; }
+  .fresh { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+  .fcard { background:var(--card); border:1px solid var(--line); border-radius:9px; padding:14px 16px; }
+  .flabel { font-size:10px; letter-spacing:.11em; text-transform:uppercase; font-weight:700;
+            color:var(--muted); }
+  .fval { font-family:var(--mono); font-size:19px; font-weight:700; margin:7px 0 2px; line-height:1.2; }
+  .fval small { font-family:inherit; font-size:12px; font-weight:600; color:var(--muted); }
+  .fnote { font-size:11.5px; color:var(--muted); }
+  .badge { display:inline-block; font-size:10px; font-weight:800; letter-spacing:.06em;
+           padding:2px 7px; border-radius:4px; vertical-align:middle; }
+  .b-good { color:var(--good); background:var(--good-soft); }
+  .b-warn { color:var(--warn); background:var(--warn-soft); }
+  .b-bad { color:var(--bad); background:var(--bad-soft); }
+  .b-neutral { color:var(--neutral); background:var(--neutral-soft); }
+  .b-accent { color:var(--accent); background:var(--accent-soft); }
+  .checkbar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:#fff;
+              border:1px solid var(--line); border-radius:9px; padding:10px 16px; margin-bottom:18px;
+              font-size:12px; color:var(--muted); }
+  .checkbar button { border:1px solid var(--accent); color:var(--accent); background:#fff;
+              border-radius:5px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; }
+  .checkbar button:hover { background:var(--accent-soft); }
+  #check-result { font-family:var(--mono); font-size:11.5px; }
+  nav.tabs { display:flex; gap:4px; border-bottom:1px solid var(--line); margin-bottom:20px;
+             overflow-x:auto; }
+  nav.tabs button { border:0; background:transparent; padding:10px 16px; font-size:13px;
+             font-weight:600; color:var(--muted); cursor:pointer; white-space:nowrap;
+             border-bottom:2px solid transparent; }
+  nav.tabs button.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .pane { display:none; } .pane.active { display:block; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:9px;
+          padding:20px 22px; margin-bottom:16px; }
+  .card h2 { font-size:15px; margin:0 0 4px; }
+  .card .hint { font-size:12px; color:var(--muted); margin:0 0 16px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .grid7 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .hero { display:flex; align-items:center; gap:26px; padding:22px 24px; border-radius:9px;
+          border:1px solid var(--line); background:linear-gradient(120deg,#fff,#f2f7f9); flex-wrap:wrap; }
+  .hero.P1 { background:linear-gradient(120deg,#fdf3e4,#fff); border-color:#edd9b4; }
+  .hero.P2 { background:linear-gradient(120deg,#e9f5ef,#fff); border-color:#c3dfd1; }
+  .hero.P3 { background:linear-gradient(120deg,#e3f2ec,#fff); border-color:#a9d6c3; }
+  .hero .pbig { font-family:var(--mono); font-size:52px; font-weight:800; line-height:1; color:var(--accent); }
+  .hero.P1 .pbig { color:var(--warn); }
+  .hero.P2 .pbig, .hero.P3 .pbig { color:var(--good); }
+  .hero .ptitle { font-size:18px; font-weight:700; }
+  .hero .ptext { font-size:12.5px; color:var(--muted); margin-top:4px; max-width:560px; }
+  .hero .pstats { margin-left:auto; text-align:right; font-family:var(--mono); font-size:12px; color:var(--muted); }
+  .hero .pstats b { display:block; font-size:22px; color:var(--ink); }
+  .ladder { display:flex; gap:8px; margin-top:18px; }
+  .ladder div { flex:1; text-align:center; border:1px solid var(--line); border-radius:7px;
+                padding:10px 6px; background:#fafcfd; font-size:11px; color:var(--muted); }
+  .ladder div b { display:block; font-family:var(--mono); font-size:15px; color:var(--ink); }
+  .ladder div.on { background:var(--accent-soft); border-color:#b9d9e4; color:var(--accent); font-weight:700; }
+  .ladder div.on b { color:var(--accent); }
+  .ladder div.done { background:#f3f8f6; border-color:#cfe3da; }
+  .dim { background:#fff; border:1px solid var(--line); border-radius:9px; padding:15px 16px; }
+  .dim .dh { display:flex; align-items:center; gap:9px; }
+  .dim .ic { font-family:var(--mono); font-size:10px; font-weight:800; color:var(--accent);
+             background:var(--accent-soft); border-radius:4px; padding:3px 5px; }
+  .dim .nm { font-size:12.5px; font-weight:700; }
+  .dim .nm span { display:block; font-size:10.5px; font-weight:500; color:var(--muted); }
+  .dim .dv { font-family:var(--mono); font-size:24px; font-weight:700; margin:10px 0 2px; }
+  .dim .dsub { font-size:11px; color:var(--muted); min-height:17px; }
+  .dim .dchg { font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:5px; }
+  .dim .dmeta { border-top:1px solid var(--line); margin-top:11px; padding-top:9px;
+                font-size:10.5px; color:var(--muted); line-height:1.6; }
+  .dim .dmeta b { color:var(--ink); font-weight:600; }
+  .dstate { margin-top:8px; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { text-align:left; font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+       color:var(--muted); font-weight:700; padding:8px 10px; border-bottom:1px solid var(--line); }
+  td { padding:9px 10px; border-bottom:1px solid #eef2f5; vertical-align:top; }
+  tr:last-child td { border-bottom:0; }
+  td.mono, .mono { font-family:var(--mono); }
+  .checkrow { display:grid; grid-template-columns:22px 1fr auto; gap:6px 10px; align-items:center;
+              padding:10px 0; border-bottom:1px solid var(--line); font-size:12.5px; }
+  .checkrow:last-child { border-bottom:0; }
+  .csym { font-family:var(--mono); font-weight:800; font-size:14px; text-align:center; }
+  .csym.ok { color:var(--good); } .csym.near { color:var(--warn); }
+  .csym.no { color:#a9b5c0; } .csym.nod { color:#a9b5c0; }
+  .cname { font-weight:600; } .cname span { display:block; font-size:10.5px; font-weight:400; color:var(--muted); }
+  .cstat { font-family:var(--mono); font-size:10.5px; font-weight:700; text-align:right; }
+  .cdetail { grid-column:2 / 4; font-size:11px; color:var(--muted); margin-top:-3px; }
+  .phasebox { border:1px solid var(--line); border-radius:8px; padding:16px 18px; background:#fbfdfe; }
+  .phasebox h3 { margin:0 0 4px; font-size:14px; }
+  .phasebox .rule { font-size:11px; color:var(--muted); margin-bottom:8px; }
+  svg { display:block; width:100%; height:auto; }
+  .legend { display:flex; gap:16px; flex-wrap:wrap; font-size:11px; color:var(--muted); margin-top:10px; }
+  .legend i { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:5px; vertical-align:-1px; }
+  details { margin-top:12px; font-size:12px; }
+  summary { cursor:pointer; font-weight:600; color:var(--accent); }
+  ul.notes { margin:8px 0 0; padding-left:18px; font-size:12px; color:var(--muted); }
+  ul.notes li { margin-bottom:6px; }
+  footer { border-top:1px solid var(--line); padding-top:16px; font-size:11.5px; color:var(--muted); }
+  .kv { display:grid; grid-template-columns:auto 1fr; gap:4px 14px; font-size:12px; }
+  .kv dt { color:var(--muted); } .kv dd { margin:0; font-family:var(--mono); }
+  @media (max-width:900px){ .fresh{grid-template-columns:repeat(2,1fr)} .grid7{grid-template-columns:repeat(2,1fr)} .grid2,.grid3{grid-template-columns:1fr} }
+  @media (max-width:560px){ .fresh,.grid7{grid-template-columns:1fr} .top-meta{text-align:left;margin-left:0} }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="logo">T?</div>
+    <div>
+      <h1>Time to Buy?</h1>
+      <div class="sub">美股熊市底部监控 · US Bear-Market Bottom Monitor · 七维度 / 四阶段</div>
+    </div>
+    <div class="top-meta"><b id="clock">—</b><span id="clock-note">your local time</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="stale-banner" class="banner alert hidden"></div>
+  <div id="newer-banner" class="banner info hidden"></div>
+
+  <section class="fresh" id="fresh"></section>
+
+  <div class="checkbar">
+    <button id="btn-check" type="button">重新检查更新 · Check for newer data</button>
+    <span id="check-result">Last published snapshot is embedded in this page.</span>
+    <span style="margin-left:auto">页面为静态文件：数据由 GitHub Actions 每日采集并写回仓库 · hard-refresh with Ctrl+F5</span>
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button data-pane="overview" class="active">总览 Overview</button>
+    <button data-pane="dimensions">七维度 Dimensions</button>
+    <button data-pane="phases">阶段判定 P0–P3</button>
+    <button data-pane="history">历史 History</button>
+    <button data-pane="data">数据状态 Data &amp; Sources</button>
+  </nav>
+
+  <div class="pane active" id="pane-overview"></div>
+  <div class="pane" id="pane-dimensions"></div>
+  <div class="pane" id="pane-phases"></div>
+  <div class="pane" id="pane-history"></div>
+  <div class="pane" id="pane-data"></div>
+
+  <footer>
+    <div id="foot-disclaimer"></div>
+    <div style="margin-top:6px">Static site · no browser-side data calls · generated by <span class="mono">pipeline/build_dashboard.py</span></div>
+  </footer>
+</main>
+
+<script id="payload" type="application/json">__PAYLOAD__</script>
+<script>
+(function () {
+  "use strict";
+  var D = JSON.parse(document.getElementById("payload").textContent);
+  var M = D.meta, CUR = D.current, DIM = CUR.dimensions, PH = CUR.phases;
+  var ORDER = M.dimension_order;
+  var PHASES = ["P0", "P1", "P2", "P3"];
+  var PCOLOR = { P0: "#94a6b5", P1: "#c8871c", P2: "#12657f", P3: "#0f7a5f" };
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function num(v, dp) { return v == null || !isFinite(v) ? "—" : Number(v).toFixed(dp == null ? 2 : dp); }
+  function utc(iso) { return iso ? iso.replace("T", " ").replace("Z", " UTC") : "—"; }
+  function localTime(iso) {
+    if (!iso) return "—";
+    return new Date(iso).toLocaleString(undefined, { year: "numeric", month: "2-digit",
+      day: "2-digit", hour: "2-digit", minute: "2-digit" });
+  }
+  function hoursSince(iso) { return (Date.now() - Date.parse(iso)) / 3600000; }
+  function rel(iso) {
+    var h = hoursSince(iso);
+    if (!isFinite(h)) return "unknown age";
+    if (h < 1) return Math.max(1, Math.round(h * 60)) + " min ago";
+    if (h < 48) return h.toFixed(1) + " h ago";
+    return (h / 24).toFixed(1) + " days ago";
+  }
+  function daysSince(dateStr) {
+    var t = Date.parse(dateStr + "T00:00:00Z");
+    return isFinite(t) ? Math.max(0, Math.floor((Date.now() - t) / 86400000)) : null;
+  }
+  function nextRun() {
+    var now = new Date();
+    for (var i = 0; i < 10; i++) {
+      var d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + i,
+        M.schedule_hour_utc, M.schedule_minute_utc, 0));
+      if (d > now && M.schedule_days_utc.indexOf(d.getUTCDay()) !== -1) return d;
+    }
+    return null;
+  }
+
+  // ------------------------------------------------------------------ top
+  document.getElementById("clock").textContent = new Date().toLocaleTimeString();
+  document.getElementById("clock-note").textContent = "your local time · " +
+    new Date().toLocaleDateString();
+  document.getElementById("foot-disclaimer").textContent = M.disclaimer;
+
+  var runHours = hoursSince(M.generated_at);
+  var freshState = runHours < 36 ? "FRESH" : (runHours < 72 ? "LAGGING" : "STALE");
+  var freshClass = freshState === "FRESH" ? "b-good" : (freshState === "LAGGING" ? "b-warn" : "b-bad");
+  var dataAge = daysSince(M.as_of);
+  var nr = nextRun();
+  var nrText = nr ? nr.toISOString().slice(0, 16).replace("T", " ") + " UTC" : "—";
+  var nrRel = nr ? "in " + ((nr - Date.now()) / 3600000).toFixed(1) + " h" : "";
+
+  document.getElementById("fresh").innerHTML =
+    '<div class="fcard"><div class="flabel">Last updated / 最后更新</div>' +
+      '<div class="fval">' + esc(M.generated_at.slice(0, 16).replace("T", " ")) +
+      ' <small>UTC</small></div>' +
+      '<div class="fnote">' + esc(rel(M.generated_at)) + ' · local ' + esc(localTime(M.generated_at)) +
+      ' &nbsp;<span class="badge ' + freshClass + '">' + freshState + '</span></div></div>' +
+    '<div class="fcard"><div class="flabel">Data as of / 数据截至</div>' +
+      '<div class="fval">' + esc(M.as_of) + '</div>' +
+      '<div class="fnote">' + esc(M.as_of_weekday) + ' US close · ' +
+      (dataAge == null ? "" : dataAge + " calendar day(s) old") + '</div></div>' +
+    '<div class="fcard"><div class="flabel">Current phase / 当前阶段</div>' +
+      '<div class="fval">' + esc(PH.phase) + ' <small>' + esc(PH.cn) + '</small></div>' +
+      '<div class="fnote">' + esc(PH.label) + ' · fear checks ' + PH.P1.count + '/3</div></div>' +
+    '<div class="fcard"><div class="flabel">Cloud run / 云端采集</div>' +
+      '<div class="fval">' + M.sources_updated + ' <small>updated / ' + M.sources_failed +
+      ' cached</small></div>' +
+      '<div class="fnote">Next ' + esc(nrText) + ' ' + esc(nrRel) + '</div></div>';
+
+  if (freshState !== "FRESH" || (dataAge != null && dataAge > 5)) {
+    var b = document.getElementById("stale-banner");
+    b.className = "banner alert";
+    b.innerHTML = "NOTICE · 数据可能未更新 · The published snapshot is " + esc(rel(M.generated_at)) +
+      " (data as of " + esc(M.as_of) + "). Check the Actions tab in GitHub, " +
+      "confirm workflow permissions are <b>Read and write</b>, and hard-refresh (Ctrl+F5).";
+  }
+
+  document.getElementById("btn-check").addEventListener("click", async function () {
+    var out = document.getElementById("check-result");
+    if (location.protocol === "file:") {
+      out.textContent = "Offline copy — open the GitHub Pages URL to check the live snapshot.";
+      return;
+    }
+    out.textContent = "Checking data/latest.json …";
+    try {
+      var r = await fetch("data/latest.json?_=" + Date.now(), { cache: "no-store" });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      var j = await r.json();
+      if (j.meta.generated_at !== M.generated_at) {
+        var nb = document.getElementById("newer-banner");
+        nb.className = "banner info";
+        nb.innerHTML = "A newer snapshot (" + esc(j.meta.generated_at) +
+          ") is published on the server. Hard-refresh (Ctrl+F5) to load it.";
+        out.textContent = "Newer snapshot found: " + j.meta.generated_at;
+      } else {
+        out.textContent = "OK — you are viewing the latest published snapshot (" + M.generated_at + ").";
+      }
+    } catch (e) {
+      out.textContent = "Could not read data/latest.json (" + esc(e.message) + ").";
+    }
+  });
+
+  // -------------------------------------------------------------- shared bits
+  function dimCard(k, detailed) {
+    var d = DIM[k];
+    var badge = '<span class="badge b-' +
+      ({ good: "good", warn: "warn", bad: "bad", neutral: "neutral", nodata: "neutral" }[d.tone] || "neutral") +
+      '">' + esc(d.state) + " · " + esc(d.state_cn) + "</span>";
+    var meta = detailed
+      ? '<div class="dmeta"><b>规则</b> ' + esc(d.threshold) + '<br><b>来源</b> ' + esc(d.source) +
+        '<br><b>该来源最后观测</b> <span class="mono">' + esc(d.source_last || "—") + "</span>" +
+        (d.source_last ? " (" + daysSince(d.source_last) + "d ago)" : "") +
+        "<br><b>说明</b> " + esc(d.note) + "</div>"
+      : '<div class="dmeta"><b>' + esc(d.source) + "</b><br>" + esc(d.threshold) + "</div>";
+    return '<div class="dim"><div class="dh"><span class="ic">' + esc(d.icon) + '</span>' +
+      '<div class="nm">' + esc(d.name_cn) + "<span>" + esc(d.name) + "</span></div></div>" +
+      '<div class="dv">' + esc(d.display) + "</div>" +
+      '<div class="dsub">' + esc(d.display_secondary || "") + "</div>" +
+      '<div class="dchg">' + esc(d.change_display || "") + "</div>" +
+      '<div class="dstate">' + badge + "</div>" + meta + "</div>";
+  }
+
+  function checkRows(list) {
+    return list.map(function (c) {
+      var cls = c.status === "satisfied" ? "ok" : c.status === "near" ? "near" :
+        c.status === "no data" ? "nod" : "no";
+      var sym = c.status === "satisfied" ? "✓" : c.status === "near" ? "~" :
+        c.status === "no data" ? "?" : "×";
+      var label = c.status === "satisfied" ? "SATISFIED" : c.status === "near" ? "NEAR" :
+        c.status === "no data" ? "NO DATA" : "NOT MET";
+      return '<div class="checkrow"><div class="csym ' + cls + '">' + sym + "</div>" +
+        '<div class="cname">' + esc(c.name) + "<span>" + esc(c.cn) + "</span></div>" +
+        '<div class="cstat ' + cls + '">' + label + "</div>" +
+        '<div class="cdetail">' + esc(c.detail) + "</div></div>";
+    }).join("");
+  }
+
+  function phaseLadder(cur) {
+    var idx = PHASES.indexOf(cur);
+    return '<div class="ladder">' + PHASES.map(function (p, i) {
+      var cls = i === idx ? "on" : (i < idx ? "done" : "");
+      return '<div class="' + cls + '"><b>' + p + "</b>" + esc(M.phase_meta[p].cn) + "</div>";
+    }).join("") + "</div>";
+  }
+
+  // --------------------------------------------------------------- overview
+  document.getElementById("pane-overview").innerHTML =
+    '<div class="hero ' + PH.phase + '"><div class="pbig">' + esc(PH.phase) + "</div>" +
+      '<div><div class="ptitle">' + esc(PH.label) + " · " + esc(PH.cn) + "</div>" +
+      '<div class="ptext">' + esc(PH.text_cn) + "<br>" + esc(PH.text) + "</div></div>" +
+      '<div class="pstats">as of <b>' + esc(CUR.date) + "</b>" +
+      "panic memory " + (PH.panic_seen ? "active" : "inactive") + "</div></div>" +
+    '<div class="card"><h2>阶段阶梯 · Bottom-formation ladder</h2>' +
+      '<p class="hint">A phase is a description of observable conditions, not a price forecast.</p>' +
+      phaseLadder(PH.phase) + "</div>" +
+    '<div class="card"><h2>七维度速览 · Seven dimensions</h2>' +
+      '<p class="hint">信用利差 · 国债收益率 · VIX 期限结构 · 投资者情绪 · 市场宽度 · 趋势反转 · 长期估值</p>' +
+      '<div class="grid7">' + ORDER.map(function (k) { return dimCard(k, false); }).join("") + "</div></div>" +
+    '<div class="grid2"><div class="card"><h2>恐慌条件 · P1 fear checks</h2>' +
+      '<p class="hint">' + esc(M.phase_rules.P1) + "</p>" + checkRows(PH.P1.checks) + "</div>" +
+      '<div class="card"><h2>企稳与确认 · P2 / P3 progress</h2>' +
+      '<p class="hint">Improvements ' + PH.P2.count + "/4 · confirmations " + PH.P3.count + "/2</p>" +
+      checkRows(PH.P2.checks.concat(PH.P3.checks)) + "</div></div>" +
+    '<div class="card"><h2>如何确认它在更新 · How to verify the daily update</h2>' +
+      '<dl class="kv"><dt>Embedded build time</dt><dd>' + esc(M.generated_at) + "</dd>" +
+      "<dt>Data as of</dt><dd>" + esc(M.as_of) + " (" + esc(M.as_of_weekday) + ")</dd>" +
+      "<dt>Cloud run</dt><dd>" + esc(M.refresh_status) + " · " + M.sources_updated +
+      " updated / " + M.sources_failed + " kept cache</dd>" +
+      "<dt>Schedule</dt><dd>" + esc(M.schedule) + " · cron " + esc(M.schedule_cron) + "</dd>" +
+      "<dt>Next run</dt><dd>" + esc(nrText) + "</dd></dl>" +
+      '<ul class="notes"><li>The <b>Last updated</b> badge above turns LAGGING after 36 h and STALE after 72 h — it is computed in your browser from the embedded build time, so a cached page still tells the truth.</li>' +
+      "<li>Use <b>Check for newer data</b> above to compare this page with <span class='mono'>data/latest.json</span> on the server.</li>" +
+      "<li>Then check the GitHub <b>Actions</b> tab and the timestamp of the last commit on <span class='mono'>data/</span>.</li></ul></div>";
+
+  // ------------------------------------------------------------ dimensions
+  document.getElementById("pane-dimensions").innerHTML =
+    '<div class="card"><h2>七个维度 · Seven observable dimensions</h2>' +
+      '<p class="hint">Every value is the latest observation on or before ' + esc(CUR.date) +
+      ". NO DATA is never back-filled. Thresholds are pre-registered in " +
+      "<span class='mono'>pipeline/config.py</span>.</p>" +
+      '<div class="grid7">' + ORDER.map(function (k) { return dimCard(k, true); }).join("") + "</div></div>" +
+    '<div class="card"><h2>阈值表 · Pre-registered thresholds</h2>' +
+      '<table><thead><tr><th>Parameter</th><th>Value</th><th>Used by</th></tr></thead><tbody>' +
+      Object.keys(M.thresholds).map(function (k) {
+        return "<tr><td class='mono'>" + esc(k) + "</td><td class='mono'>" + esc(M.thresholds[k]) +
+          "</td><td>" + esc(k.split("_")[0]) + "</td></tr>";
+      }).join("") + "</tbody></table></div>";
+
+  // ---------------------------------------------------------------- phases
+  function phaseBox(p) {
+    var o = PH[p];
+    return '<div class="phasebox"><h3>' + p + " · " + esc(M.phase_meta[p].cn) + " · " +
+      esc(M.phase_meta[p].label) + ' <span class="badge ' +
+      (o.count >= o.need ? "b-good" : "b-neutral") + '">' + o.count + "/" + o.need +
+      " required</span></h3>" +
+      '<div class="rule">' + esc(M.phase_rules[p]) + "</div>" +
+      (o.checks ? checkRows(o.checks) :
+        '<div class="rule">Default state: no stress cluster, or insufficient data.</div>') + "</div>";
+  }
+  document.getElementById("pane-phases").innerHTML =
+    '<div class="card"><h2>四阶段判定 · Bottom-formation phases</h2>' +
+      '<p class="hint">Highest satisfied phase wins, but P2/P3 require a P1 panic episode within ' +
+      esc(M.thresholds.panic_memory_sessions) + " sessions. A confirmed cycle stays in P3 until that " +
+      "panic memory expires; a fresh P1 restarts the cycle. A NO DATA check can never count as satisfied.</p>" +
+      phaseLadder(PH.phase) + "</div>" +
+    '<div class="grid3">' + phaseBox("P1") + phaseBox("P2") + phaseBox("P3") + "</div>" +
+    '<div class="card"><h2>P0 · ' + esc(M.phase_meta.P0.cn) + "</h2>" +
+      '<p class="hint">' + esc(M.phase_rules.P0) + "</p>" +
+      '<p class="hint">' + esc(M.phase_meta.P0.text_cn) + " / " + esc(M.phase_meta.P0.text) + "</p></div>";
+
+  // ---------------------------------------------------------------- history
+  function timelineSVG() {
+    var H = D.history || [], W = 900, HH = 190, L = 46, R = 12, TP = 14, BT = 168;
+    if (!H.length) return "<p class='hint'>No history available.</p>";
+    var x = function (i) { return L + i * (W - L - R) / Math.max(1, H.length - 1); };
+    var y = function (p) { return BT - (PHASES.indexOf(p) / 3) * (BT - TP); };
+    var grid = PHASES.map(function (p, i) {
+      var yy = y(p);
+      return '<line x1="' + L + '" y1="' + yy + '" x2="' + (W - R) + '" y2="' + yy +
+        '" stroke="#e6ecf1" stroke-width="1"/><text x="4" y="' + (yy + 4) +
+        '" font-size="11" fill="' + PCOLOR[p] + '" font-family="monospace">' + p + "</text>";
+    }).join("");
+    var bars = H.map(function (r, i) {
+      var w = Math.max(1, (W - L - R) / H.length + 0.6);
+      return '<rect x="' + x(i).toFixed(1) + '" y="' + (y(r.phase) - 4).toFixed(1) +
+        '" width="' + w.toFixed(1) + '" height="8" rx="1" fill="' + PCOLOR[r.phase] + '" opacity="0.9"/>';
+    }).join("");
+    var marks = [0, Math.floor(H.length / 3), Math.floor(2 * H.length / 3), H.length - 1]
+      .filter(function (v, i, a) { return a.indexOf(v) === i; }).map(function (i) {
+        return '<text x="' + x(i).toFixed(1) + '" y="186" font-size="10" fill="#637386" ' +
+          'text-anchor="middle" font-family="monospace">' + esc(H[i].date) + "</text>";
+      }).join("");
+    return '<svg viewBox="0 0 ' + W + ' ' + HH + '" role="img" aria-label="Phase timeline">' +
+      grid + bars + marks + "</svg>";
+  }
+  function lineSVG(key, color, label, fmt) {
+    var H = D.history || [], W = 900, HH = 150, L = 40, R = 12, TP = 12, BT = 120;
+    var vals = H.map(function (r) { return r[key]; }).filter(function (v) { return v != null && isFinite(v); });
+    if (!vals.length) return "<p class='hint'>No data for " + esc(label) + ".</p>";
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    if (hi === lo) { hi = lo + 1; }
+    var x = function (i) { return L + i * (W - L - R) / Math.max(1, H.length - 1); };
+    var y = function (v) { return BT - (v - lo) / (hi - lo) * (BT - TP); };
+    var pts = [], started = false;
+    H.forEach(function (r, i) {
+      if (r[key] == null || !isFinite(r[key])) { started = false; return; }
+      pts.push((started ? "L" : "M") + x(i).toFixed(1) + " " + y(r[key]).toFixed(1));
+      started = true;
+    });
+    return '<svg viewBox="0 0 ' + W + ' ' + HH + '" role="img" aria-label="' + esc(label) + '">' +
+      '<line x1="' + L + '" y1="' + BT + '" x2="' + (W - R) + '" y2="' + BT + '" stroke="#e6ecf1"/>' +
+      '<text x="2" y="' + (TP + 4) + '" font-size="10" fill="#637386" font-family="monospace">' +
+      num(hi, 1) + '</text><text x="2" y="' + (BT + 4) +
+      '" font-size="10" fill="#637386" font-family="monospace">' + num(lo, 1) + "</text>" +
+      '<path d="' + pts.join(" ") + '" fill="none" stroke="' + color + '" stroke-width="1.8"/>' +
+      '<text x="' + L + '" y="142" font-size="10" fill="#637386" font-family="monospace">' +
+      esc(H[0].date) + " → " + esc(H[H.length - 1].date) + "</text></svg>";
+  }
+  document.getElementById("pane-history").innerHTML =
+    '<div class="card"><h2>阶段时间线 · Phase timeline (' + M.history_sessions + ' sessions)</h2>' +
+      '<p class="hint">Each bar is one US trading session. Recomputed from cached history on every run.</p>' +
+      timelineSVG() + '<div class="legend">' + PHASES.map(function (p) {
+        return '<span><i style="background:' + PCOLOR[p] + '"></i>' + p + " " +
+          esc(M.phase_meta[p].cn) + "</span>";
+      }).join("") + "</div></div>" +
+    '<div class="grid2"><div class="card"><h2>VIX 30-day</h2>' +
+      lineSVG("vix", "#b23b2e", "VIX") + "</div>" +
+      '<div class="card"><h2>市场宽度 · Breadth (% sectors &gt; 50DMA)</h2>' +
+      lineSVG("breadth", "#12657f", "Breadth") + "</div></div>" +
+    '<div class="card"><h2>最近 20 个交易日 · Recent sessions</h2>' +
+      '<table><thead><tr><th>Date</th><th>Phase</th><th>VIX</th><th>9D/30D</th>' +
+      '<th>Breadth</th><th>HY OAS</th><th>F&amp;G</th><th>SPY</th><th>Trend</th></tr></thead><tbody>' +
+      (D.history || []).slice(-20).reverse().map(function (r) {
+        return "<tr><td class='mono'>" + esc(r.date) + "</td><td><span class='badge' style='background:" +
+          PCOLOR[r.phase] + "22;color:" + PCOLOR[r.phase] + "'>" + esc(r.phase) + "</span></td>" +
+          "<td class='mono'>" + num(r.vix, 2) + "</td><td class='mono'>" + num(r.inversion_pct, 1) + "%</td>" +
+          "<td class='mono'>" + num(r.breadth, 0) + "%</td><td class='mono'>" + num(r.hy_oas, 2) + "</td>" +
+          "<td class='mono'>" + num(r.fng, 1) + "</td><td class='mono'>" + num(r.spy, 2) + "</td>" +
+          "<td>" + esc(r.trend) + "</td></tr>";
+      }).join("") + "</tbody></table></div>";
+
+  // ------------------------------------------------------------------- data
+  var srcRows = (D.sources || []).map(function (s) {
+    var age = s.last ? daysSince(s.last) : null;
+    var cls = s.status === "UPDATED" ? "b-good" : s.status === "CACHED" ? "b-neutral" : "b-warn";
+    var maxAge = /monthly/i.test(s.frequency) ? 45 : 10;
+    var stale = age != null && age > maxAge;
+    return "<tr><td><b>" + esc(s.name) + "</b><br><span style='color:var(--muted)'>" +
+      esc(s.provider) + "</span></td><td>" + esc(s.used_for) + "</td><td>" + esc(s.frequency) +
+      "</td><td class='mono'>" + esc(s.last || "—") + (age == null ? "" : " <span style='color:" +
+      (stale ? "var(--bad)" : "var(--muted)") + "'>(" + age + "d)</span>") +
+      "</td><td><span class='badge " + cls + "'>" + esc(s.status) + "</span>" +
+      (stale ? ' <span class="badge b-bad">STALE</span>' : "") +
+      "</td><td><a href='" + esc(s.url) + "' target='_blank' rel='noopener'>source ↗</a></td></tr>";
+  }).join("");
+  var refreshKeys = Object.keys(D.refresh.sources || {});
+  var refreshRows = refreshKeys.map(function (k) {
+    var r = D.refresh.sources[k];
+    return "<tr><td class='mono'>" + esc(k) + "</td><td><span class='badge " +
+      (r.status === "UPDATED" ? "b-good" : "b-warn") + "'>" + esc(r.status) + "</span></td>" +
+      "<td class='mono'>" + esc(r.last || "—") + "</td><td>" + esc(r.reason || (r.added != null ?
+        "+" + r.added + " rows" : "")) + "</td></tr>";
+  }).join("");
+  document.getElementById("pane-data").innerHTML =
+    '<div class="card"><h2>数据来源与新鲜度 · Sources &amp; freshness</h2>' +
+      '<p class="hint">The <b>last observation</b> column is read from the committed cache files, so it is the honest answer to "is this updating?". A daily source older than 10 days (or a monthly source older than 45 days) is flagged STALE.</p>' +
+      '<table><thead><tr><th>Source</th><th>Dimension</th><th>Frequency</th>' +
+      '<th>Last observation</th><th>Last run</th><th>Link</th></tr></thead><tbody>' + srcRows + "</tbody></table></div>" +
+    '<div class="card"><h2>最近一次云端采集 · Last cloud run</h2>' +
+      '<dl class="kv"><dt>Checked at</dt><dd>' + esc(D.refresh.checked_at) + "</dd>" +
+      "<dt>Mode</dt><dd>" + esc(D.refresh.mode) + "</dd>" +
+      "<dt>Sources updated</dt><dd>" + D.refresh.updated + " / " +
+      (D.refresh.updated + D.refresh.failed) + "</dd>" +
+      "<dt>Schedule</dt><dd>" + esc(M.schedule) + " (cron " + esc(M.schedule_cron) + ")</dd></dl>" +
+      (refreshRows ? '<details><summary>Per-source refresh log (' + refreshKeys.length +
+        ")</summary><table style='margin-top:10px'><thead><tr><th>Series</th><th>Status</th>" +
+        "<th>Last</th><th>Note</th></tr></thead><tbody>" + refreshRows +
+        "</tbody></table></details>" : "<p class='hint'>Offline build — no refresh was attempted.</p>") + "</div>" +
+    '<div class="card"><h2>更新机制 · How the daily update works</h2>' +
+      '<ul class="notes">' +
+      "<li><b>GitHub Actions</b> runs <span class='mono'>pipeline/build_dashboard.py</span> on a schedule after the US close. It fetches public data, recomputes the payload, rebuilds <span class='mono'>index.html</span> and commits <span class='mono'>data/</span> back to the repository.</li>" +
+      "<li><b>GitHub Pages</b> then serves the static files. The browser never calls Yahoo, FRED, CNN or multpl.</li>" +
+      "<li>If the update looks stuck: (1) confirm <span class='mono'>.github/workflows/daily.yml</span> exists in the repo, (2) Settings → Actions → General → Workflow permissions = <b>Read and write</b>, (3) Pages → Deploy from a branch → <span class='mono'>main</span> / root, (4) use the Actions tab → <b>Run workflow</b> to test manually, (5) GitHub pauses schedules after ~60 days of repo inactivity, (6) hard-refresh the page with Ctrl+F5.</li>" +
+      "<li>All endpoints are public; no API keys or GitHub secrets are required.</li></ul></div>" +
+    '<div class="card"><h2>方法与局限 · Method &amp; limitations</h2>' +
+      '<ul class="notes">' + (M.data_notes || []).map(function (n) {
+        return "<li>" + esc(n) + "</li>";
+      }).join("") +
+      "<li>Point-in-time: at any date only observations on or before that date are used. Missing series report NO DATA and never satisfy a check.</li>" +
+      "<li>Thresholds are fixed constants, not fitted to the current reading. No model is trained, no return is predicted.</li>" +
+      "<li>A failed source keeps its last good cache and is labelled KEPT CACHE — values are never invented.</li>" +
+      "<li>" + esc(M.disclaimer) + "</li></ul></div>";
+
+  // ------------------------------------------------------------------- tabs
+  var buttons = document.querySelectorAll("nav.tabs button");
+  Array.prototype.forEach.call(buttons, function (b) {
+    b.addEventListener("click", function () {
+      Array.prototype.forEach.call(buttons, function (x) { x.classList.remove("active"); });
+      document.querySelectorAll(".pane").forEach(function (p) { p.classList.remove("active"); });
+      b.classList.add("active");
+      document.getElementById("pane-" + b.dataset.pane).classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+})();
+</script>
+</body>
+</html>
