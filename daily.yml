@@ -1,0 +1,78 @@
+name: Daily market data refresh
+
+# Cloud-side daily collection. The job fetches public market data, recomputes
+# the seven dimensions and P0-P3 phase, rebuilds index.html, then commits the
+# refreshed data back to this repository. GitHub Pages serves static files only;
+# the browser never calls a data provider.
+
+on:
+  schedule:
+    # 06:30 UTC = 01:30 EST / 02:30 EDT, Tue-Sat UTC = Mon-Fri US sessions.
+    - cron: '30 6 * * 2-6'
+  workflow_dispatch:        # Actions tab -> Run workflow (manual test)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: time-to-buy-daily
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Unit tests (phase engine, no network)
+        run: python -m unittest discover -s tests -v
+
+      - name: Collect data and rebuild dashboard
+        run: python pipeline/build_dashboard.py
+
+      - name: Health check
+        shell: bash
+        run: |
+          python - <<'PY'
+          import datetime as dt, json, pathlib
+          p = json.loads(pathlib.Path('data/latest.json').read_text(encoding='utf-8'))
+          m, c = p['meta'], p['current']
+          print(f"generated_at = {m['generated_at']}")
+          print(f"data as of   = {m['as_of']} ({m['as_of_weekday']})")
+          print(f"phase        = {c['phases']['phase']} / {c['phases']['cn']}")
+          print(f"sources      = {m['sources_updated']} updated, {m['sources_failed']} kept cache")
+          print(f"dimensions   = {len(c['dimensions'])} readings")
+          index = pathlib.Path('index.html').read_text(encoding='utf-8')
+          assert '__PAYLOAD__' not in index, 'payload was not injected'
+          assert len(index) > 20000, 'index.html looks truncated'
+          age = (dt.datetime.now(dt.timezone.utc) -
+                 dt.datetime.strptime(m['generated_at'], '%Y-%m-%dT%H:%M:%SZ')
+                 .replace(tzinfo=dt.timezone.utc)).total_seconds()
+          assert age < 3600, f'generated_at is {age:.0f}s old - build did not run'
+          if m['sources_updated'] == 0:
+              print('::warning::all sources kept their cache - check provider access')
+          print('health check OK')
+          PY
+
+      - name: Commit refreshed data and dashboard
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ index.html
+          if git diff --cached --quiet; then
+            echo "No data changes to commit."
+          else
+            git commit -m "chore: daily market data refresh $(date -u +%Y-%m-%d)"
+            git push
+          fi
