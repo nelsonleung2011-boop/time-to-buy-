@@ -1,169 +1,169 @@
 {
-  "checked_at": "2026-11-25T17:31:38Z",
+  "checked_at": "2026-11-26T17:14:12Z",
   "mode": "LIVE",
   "sources": {
     "SPY": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6766
     },
     "VIX": {
       "status": "UPDATED",
       "added": 1,
-      "from": "2026-11-24",
-      "last": "2026-11-25",
-      "n": 6768
+      "from": "2026-11-25",
+      "last": "2026-11-26",
+      "n": 6769
     },
     "VIX9D": {
       "status": "UPDATED",
-      "added": 2,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 3999
     },
     "TNX": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6760
     },
     "FVX": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6760
     },
     "HYG": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 4940
     },
     "LQD": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6122
     },
     "RSP": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 5932
     },
     "XLC": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 2122
     },
     "XLRE": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 2800
     },
     "XLB": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6766
     },
     "XLE": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6766
     },
     "XLF": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6766
     },
     "XLI": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6766
     },
     "XLK": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6766
     },
     "XLP": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6766
     },
     "XLU": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6766
     },
     "XLV": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6766
     },
     "XLY": {
       "status": "UPDATED",
-      "added": 1,
-      "from": "2026-11-24",
+      "added": 0,
+      "from": "2026-11-25",
       "last": "2026-11-25",
       "n": 6766
     },
     "BAMLH0A0HYM2": {
       "status": "UPDATED",
-      "added": 1,
+      "added": 0,
       "last": "2026-11-24",
       "n": 790
     },
     "DFII10": {
       "status": "UPDATED",
       "added": 1,
-      "last": "2026-11-23",
-      "n": 5977
+      "last": "2026-11-24",
+      "n": 5978
     },
     "T10Y2Y": {
       "status": "UPDATED",
       "added": 1,
-      "last": "2026-11-24",
-      "n": 12617
+      "last": "2026-11-25",
+      "n": 12618
     },
     "DGS10": {
       "status": "UPDATED",
       "added": 1,
-      "last": "2026-11-23",
-      "n": 16208
+      "last": "2026-11-24",
+      "n": 16209
     },
     "FNG": {
       "status": "UPDATED",
       "added": 1,
-      "last": "2026-11-25",
-      "n": 255
+      "last": "2026-11-26",
+      "n": 256
     },
     "CAPE": {
       "status": "KEPT CACHE",
