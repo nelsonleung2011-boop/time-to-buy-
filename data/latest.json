@@ -3,14 +3,14 @@
   "project": "Time to Buy?",
   "subtitle": "美股熊市底部监控 / US Bear-Market Bottom Monitor",
   "version": "1.0",
-  "generated_at": "2026-11-27T16:55:20Z",
+  "generated_at": "2026-11-28T15:46:09Z",
   "as_of": "2026-11-27",
   "as_of_weekday": "Friday",
   "run_mode": "LIVE",
   "refresh_status": "OK",
   "sources_updated": 24,
   "sources_failed": 1,
-  "data_age_days": 0,
+  "data_age_days": 1,
   "schedule": "06:30 UTC, Tue–Sat (after the US close)",
   "schedule_cron": "30 6 * * 2-6",
   "schedule_days_utc": [
@@ -98,18 +98,18 @@
     "name": "Credit spreads",
     "name_cn": "信用利差",
     "icon": "CR",
-    "value": 3.72,
+    "value": 3.77,
     "unit": "%",
-    "display": "3.72%",
-    "change_20d": 0.54,
-    "change_display": "+0.54pp / 20d",
+    "display": "3.77%",
+    "change_20d": 0.51,
+    "change_display": "+0.51pp / 20d",
     "state": "WIDENING",
     "state_cn": "走阔",
     "tone": "bad",
-    "note": "HY OAS 3.72%; 20d change +0.54pp",
+    "note": "HY OAS 3.77%; 20d change +0.51pp",
     "threshold": "Easing ≤ −0.15pp/20d · widening ≥ +0.15pp · elevated ≥ 3.5%",
     "source": "FRED BAMLH0A0HYM2",
-    "source_last": "2026-11-24",
+    "source_last": "2026-11-26",
     "has_data": true,
     "proxy": false
    },
@@ -118,59 +118,59 @@
     "name": "Treasury yields",
     "name_cn": "国债收益率",
     "icon": "RT",
-    "value": 4.929,
+    "value": 4.936,
     "unit": "%",
-    "display": "4.93%",
-    "change_20d": -0.06,
-    "change_display": "-0.06pp / 20d",
+    "display": "4.94%",
+    "change_20d": -0.053,
+    "change_display": "-0.05pp / 20d",
     "state": "PRESSURE",
     "state_cn": "压力",
     "tone": "warn",
-    "note": "10Y nominal 4.93%",
+    "note": "10Y nominal 4.94%",
     "threshold": "Easing: 10Y nominal or 10Y real yield falls ≥ 0.15pp in 20 observations",
     "source": "Yahoo ^TNX + FRED DFII10",
     "source_last": "2026-11-27",
     "has_data": true,
-    "real10y": 2.79,
-    "real10y_chg20": 0.13,
-    "curve_10y2y": 0.24,
-    "display_secondary": "10Y real 2.79%"
+    "real10y": 2.73,
+    "real10y_chg20": 0.09,
+    "curve_10y2y": 0.25,
+    "display_secondary": "10Y real 2.73%"
    },
    "vix_term": {
     "key": "vix_term",
     "name": "VIX term structure",
     "name_cn": "VIX 期限结构",
     "icon": "VX",
-    "value": 25.02,
+    "value": 23.81,
     "unit": "idx",
-    "display": "25.02",
+    "display": "23.81",
     "change_20d": null,
     "change_display": "",
     "state": "STRESS",
     "state_cn": "承压",
     "tone": "warn",
-    "note": "VIX 30D 25.02",
+    "note": "VIX 30D 23.81",
     "threshold": "Panic: VIX ≥ 30 or VIX9D/VIX > 1.05 (>5% backwardation)",
     "source": "Yahoo ^VIX + ^VIX9D",
     "source_last": "2026-11-27",
     "has_data": true,
-    "vix9d": 25.65,
-    "inversion_pct": 2.52,
-    "display_secondary": "9D/30D +2.5%"
+    "vix9d": 24.1,
+    "inversion_pct": 1.22,
+    "display_secondary": "9D/30D +1.2%"
    },
    "sentiment": {
     "key": "sentiment",
     "name": "Investor sentiment",
     "name_cn": "投资者情绪",
     "icon": "ST",
-    "value": 25.086,
+    "value": 24.886,
     "unit": "idx",
-    "display": "25.1",
+    "display": "24.9",
     "change_20d": null,
     "change_display": "",
-    "state": "FEAR",
-    "state_cn": "恐惧",
-    "tone": "warn",
+    "state": "PANIC",
+    "state_cn": "恐慌",
+    "tone": "bad",
     "note": "CNN Fear & Greed 0–100 (extreme fear < 25)",
     "threshold": "Extreme fear < 25 · fear < 45 · neutral 45–55 · complacent > 55",
     "source": "CNN Fear & Greed",
@@ -203,20 +203,20 @@
     "name": "Trend reversal",
     "name_cn": "趋势反转",
     "icon": "TR",
-    "value": 727.785,
+    "value": 728.32,
     "unit": "USD",
-    "display": "$727.78",
-    "change_20d": -5.404,
-    "change_display": "-5.4% / 20d",
+    "display": "$728.32",
+    "change_20d": -5.334,
+    "change_display": "-5.3% / 20d",
     "state": "BEAR",
     "state_cn": "熊市",
     "tone": "bad",
-    "note": "vs 50DMA -3.9%, vs 200DMA -0.8%",
+    "note": "vs 50DMA -3.8%, vs 200DMA -0.7%",
     "threshold": "Confirmed: SPY > 50DMA and > 200DMA · recovering: above 50DMA only",
     "source": "Yahoo SPY",
     "source_last": "2026-11-27",
     "has_data": true,
-    "ma50": 757.19,
+    "ma50": 757.2,
     "ma200": 733.34,
     "ma50_slope20": -1.36,
     "display_secondary": "50DMA slope -1.4% / 20d"
@@ -251,20 +251,20 @@
    "panic_now": false,
    "panic_seen": true,
    "P1": {
-    "count": 0,
+    "count": 1,
     "need": 2,
     "checks": [
      {
       "name": "VIX term structure panic",
       "cn": "VIX 期限结构恐慌",
       "status": "near",
-      "detail": "VIX 30D 25.02 · 9D/30D +2.5%"
+      "detail": "VIX 30D 23.81 · 9D/30D +1.2%"
      },
      {
       "name": "Extreme fear in sentiment",
       "cn": "投资者极度恐慌",
-      "status": "near",
-      "detail": "25.1 — 恐惧"
+      "status": "satisfied",
+      "detail": "24.9 — 恐慌"
      },
      {
       "name": "Breadth collapse",
@@ -274,8 +274,8 @@
      }
     ],
     "tally": {
-     "satisfied": 0,
-     "near": 2,
+     "satisfied": 1,
+     "near": 1,
      "no_data": 0,
      "total": 3
     }
@@ -288,13 +288,13 @@
       "name": "Credit risk stabilising",
       "cn": "信用风险企稳",
       "status": "not satisfied",
-      "detail": "HY OAS 3.72%; 20d change +0.54pp"
+      "detail": "HY OAS 3.77%; 20d change +0.51pp"
      },
      {
       "name": "Rate pressure easing",
       "cn": "利率压力缓和",
       "status": "not satisfied",
-      "detail": "4.93% · 10Y real 2.79%"
+      "detail": "4.94% · 10Y real 2.73%"
      },
      {
       "name": "Breadth improving",
@@ -306,7 +306,7 @@
       "name": "Price structure stabilising",
       "cn": "价格结构企稳",
       "status": "not satisfied",
-      "detail": "$727.78 · vs 50DMA -3.9%, vs 200DMA -0.8%"
+      "detail": "$728.32 · vs 50DMA -3.8%, vs 200DMA -0.7%"
      }
     ],
     "tally": {
@@ -367,10 +367,10 @@
    "XLU": "2026-11-27",
    "XLV": "2026-11-27",
    "XLY": "2026-11-27",
-   "BAMLH0A0HYM2": "2026-11-24",
-   "DFII10": "2026-11-24",
-   "T10Y2Y": "2026-11-25",
-   "DGS10": "2026-11-24",
+   "BAMLH0A0HYM2": "2026-11-26",
+   "DFII10": "2026-11-25",
+   "T10Y2Y": "2026-11-27",
+   "DGS10": "2026-11-25",
    "FNG": "2026-11-27",
    "CAPE": "2026-11-01"
   }
@@ -5029,7 +5029,7 @@
    "vix": 28.29,
    "inversion_pct": 4.67,
    "breadth": 63.636,
-   "hy_oas": 3.72,
+   "hy_oas": 3.77,
    "fng": 20.914,
    "tnx": 4.848,
    "cape": 39.82,
@@ -5041,20 +5041,20 @@
   {
    "date": "2026-11-27",
    "phase": "P0",
-   "p1": 0,
+   "p1": 1,
    "p2": 0,
    "p3": 1,
-   "vix": 25.02,
-   "inversion_pct": 2.52,
+   "vix": 23.81,
+   "inversion_pct": 1.22,
    "breadth": 63.636,
-   "hy_oas": 3.72,
-   "fng": 25.086,
-   "tnx": 4.929,
+   "hy_oas": 3.77,
+   "fng": 24.886,
+   "tnx": 4.936,
    "cape": 39.82,
-   "spy": 727.785,
+   "spy": 728.32,
    "trend": "BEAR",
    "credit": "WIDENING",
-   "sentiment": "FEAR"
+   "sentiment": "PANIC"
   }
  ],
  "sources": [
@@ -5113,7 +5113,7 @@
    "provider": "FRED fredgraph.csv",
    "used_for": "credit",
    "frequency": "business daily",
-   "last": "2026-11-24",
+   "last": "2026-11-26",
    "n_series": 1,
    "status": "UPDATED",
    "series": "BAMLH0A0HYM2"
@@ -5125,7 +5125,7 @@
    "provider": "FRED fredgraph.csv",
    "used_for": "rates",
    "frequency": "business daily",
-   "last": "2026-11-24",
+   "last": "2026-11-25",
    "n_series": 1,
    "status": "UPDATED",
    "series": "DFII10"
@@ -5180,171 +5180,171 @@
   }
  ],
  "refresh": {
-  "checked_at": "2026-11-27T16:55:20Z",
+  "checked_at": "2026-11-28T15:46:09Z",
   "mode": "LIVE",
   "updated": 24,
   "failed": 1,
   "sources": {
    "SPY": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6767
    },
    "VIX": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-26",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6770
    },
    "VIX9D": {
     "status": "UPDATED",
     "added": 0,
-    "from": "2026-11-25",
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 3999
    },
    "TNX": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6761
    },
    "FVX": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6761
    },
    "HYG": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 4941
    },
    "LQD": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6123
    },
    "RSP": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 5933
    },
    "XLC": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 2123
    },
    "XLRE": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 2801
    },
    "XLB": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6767
    },
    "XLE": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6767
    },
    "XLF": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6767
    },
    "XLI": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6767
    },
    "XLK": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6767
    },
    "XLP": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6767
    },
    "XLU": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6767
    },
    "XLV": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6767
    },
    "XLY": {
     "status": "UPDATED",
-    "added": 1,
-    "from": "2026-11-25",
+    "added": 0,
+    "from": "2026-11-27",
     "last": "2026-11-27",
     "n": 6767
    },
    "BAMLH0A0HYM2": {
     "status": "UPDATED",
-    "added": 0,
-    "last": "2026-11-24",
-    "n": 790
+    "added": 2,
+    "last": "2026-11-26",
+    "n": 792
    },
    "DFII10": {
     "status": "UPDATED",
-    "added": 0,
-    "last": "2026-11-24",
-    "n": 5978
+    "added": 1,
+    "last": "2026-11-25",
+    "n": 5979
    },
    "T10Y2Y": {
     "status": "UPDATED",
-    "added": 0,
-    "last": "2026-11-25",
-    "n": 12618
+    "added": 1,
+    "last": "2026-11-27",
+    "n": 12619
    },
    "DGS10": {
     "status": "UPDATED",
-    "added": 0,
-    "last": "2026-11-24",
-    "n": 16209
+    "added": 1,
+    "last": "2026-11-25",
+    "n": 16210
    },
    "FNG": {
     "status": "UPDATED",
-    "added": 1,
+    "added": 0,
     "last": "2026-11-27",
     "n": 257
    },
